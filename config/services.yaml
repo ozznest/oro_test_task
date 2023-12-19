@@ -24,9 +24,5 @@ services:
     App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber:
         arguments:
             $chainedServices: !tagged_iterator app.chained.console
-
     App\BarBundle\Command\BarCommand:
         tags: [ 'app.chained.console' ]
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones

@@ -3,6 +3,3 @@ services:
     autowire: true
     autoconfigure: true
 
-  App\BarBundle\Command\:
-    resource: '../../Command'
-    tags: ['app.chained.console']

@@ -13,7 +13,8 @@ use Symfony\Component\Console\Command\Command;
 
 class CommandEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private iterable $chainedServices
+    public function __construct(
+        private iterable $chainedServices
     ) {
     }
 
