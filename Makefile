@@ -6,3 +6,5 @@ down:
 	docker-compose down
 sh:
 	docker exec -it php8-oro /bin/bash
+test:
+	docker exec -it php8-oro php /app/vendor/bin/phpunit
