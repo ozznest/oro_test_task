@@ -1,12 +1,12 @@
 <?php
 
-namespace FooBundle\Command;
+namespace App\FooBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TestCommand extends Command
+class FooCommand extends Command
 {
     public function __construct()
     {
@@ -15,7 +15,7 @@ class TestCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('test');
+        $output->writeln('foo:command');
         return Command::SUCCESS;
     }
 }
