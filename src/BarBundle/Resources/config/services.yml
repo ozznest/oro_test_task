@@ -5,3 +5,4 @@ services:
 
   App\BarBundle\Command\:
     resource: '../../Command'
+    tags: ['app.chained.console']

@@ -10,7 +10,7 @@ class BarCommand extends Command
 {
     public function __construct()
     {
-        parent::__construct('bar:test');
+        parent::__construct('bar:command');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

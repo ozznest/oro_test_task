@@ -10,7 +10,7 @@ class DeleteCommandCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition(BarCommand::class);
-        $definition->clearTag('console.command');
+        //$definition = $container->getDefinition(BarCommand::class);
+        //$definition->clearTag('console.command');
     }
 }
