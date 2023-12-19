@@ -1,0 +1,17 @@
+version: '3.5'
+services:
+  php8-oro:
+    build: ./
+    container_name: php8-oro
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    working_dir: /app
+    entrypoint: "php -S 0.0.0.0:8001"
+    ports:
+      - "127.0.0.1:8001:8001"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1024k"
+        max-file: "2"
