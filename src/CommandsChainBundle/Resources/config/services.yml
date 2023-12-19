@@ -2,6 +2,3 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-    bind:
-      iterable $chainedServices: !tagged_iterator app.chained.console
-  App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber: ~

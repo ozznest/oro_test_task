@@ -20,7 +20,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/EventSubscriber/'
-
     App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber:
         arguments:
             $chainedServices: !tagged_iterator app.chained.console
+
