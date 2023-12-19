@@ -16,3 +16,9 @@ RUN apt-get update && apt-get upgrade -y \
 #    Чистим временные файлы
     && docker-php-source delete \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y
+
+#RUN pecl install xdebug \
+#    && docker-php-ext-enable xdebug
+#
+#COPY ./context/xdebug.ini /usr/local/etc/php/conf.d/15-xdebug.ini
+
