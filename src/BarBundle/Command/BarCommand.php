@@ -2,11 +2,12 @@
 
 namespace App\BarBundle\Command;
 
+use App\CommandsChainBundle\ChainableInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BarCommand extends Command
+class BarCommand extends Command implements ChainableInterface
 {
     public function __construct()
     {

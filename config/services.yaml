@@ -24,5 +24,3 @@ services:
     App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber:
         arguments:
             $chainedServices: !tagged_iterator app.chained.console
-    App\BarBundle\Command\BarCommand:
-        tags: [ 'app.chained.console' ]
