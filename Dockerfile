@@ -1,4 +1,4 @@
-FROM php:8.0-rc-cli
+FROM php:8.2-rc-cli
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install apt-utils -y \
