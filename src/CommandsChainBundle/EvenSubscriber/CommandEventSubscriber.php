@@ -70,13 +70,10 @@ class CommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-
-
     public function afterCommand(ConsoleTerminateEvent $event): void
     {
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {
-
             $log = sprintf('%s is a master command of a command chain that has registered member commands', $command->getName());
             if(count($this->chainedServices)) {
                 $log .= 'that has registered member commands';
@@ -85,8 +82,6 @@ class CommandEventSubscriber implements EventSubscriberInterface
             $this->executeMembersCommand($event, $command);
         }
     }
-
-
 
     protected function executeMembersCommand(ConsoleTerminateEvent $event, Command $command): void
     {
@@ -111,8 +106,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-
-    private function getCommandsChainForRootCommand(Command $rootCommand): array
+    protected function getCommandsChainForRootCommand(Command $rootCommand): array
     {
         $chain = [];
         /* @var $service ChainableInterface */
