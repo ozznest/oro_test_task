@@ -33,7 +33,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
                 ['disableTaggedCommands'] ,
                 ['runRootCommand']
             ],
-            ConsoleEvents::TERMINATE => 'afterCommand'
+            ConsoleEvents::TERMINATE => 'runChainCommandsForRoot'
         ];
     }
 
@@ -66,7 +66,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function afterCommand(ConsoleTerminateEvent $event): void
+    public function runChainCommandsForRoot(ConsoleTerminateEvent $event): void
     {
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {

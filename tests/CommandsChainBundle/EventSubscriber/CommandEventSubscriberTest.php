@@ -27,7 +27,7 @@ class CommandEventSubscriberTest extends TestCase
         $this->outputMock = $this->createMock(OutputInterface::class);
     }
 
-    public function testAfterCommandIfNoApplication(): void
+    public function testRunChainCommandsForRootIfNoApplication(): void
     {
         $commandService = new class('test:chainItem') extends Command implements ChainableInterface {
             public function getRootCommand() : string
@@ -46,7 +46,7 @@ class CommandEventSubscriberTest extends TestCase
         $consoleEvent = new ConsoleTerminateEvent($command, $this->inputMock, $this->outputMock, Command::SUCCESS);
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
         $this->expectException(LogicException::class);
-        $subscriber->afterCommand($consoleEvent);
+        $subscriber->runChainCommandsForRoot($consoleEvent);
     }
 
     public function testRunRootCommand(): void
