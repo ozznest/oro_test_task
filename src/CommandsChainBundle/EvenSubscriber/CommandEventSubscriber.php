@@ -15,14 +15,14 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CommandEventSubscriber implements EventSubscriberInterface
+readonly class CommandEventSubscriber implements EventSubscriberInterface
 {
     /**
      * @param Command[] $chainedServices
      */
     public function __construct(
-        private readonly iterable $chainedServices,
-        private readonly LoggerInterface $logger
+        private iterable        $chainedServices,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -42,7 +42,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
         $commandName = $command->getName();
         foreach ($this->chainedServices as $command) {
-            $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $command->getName(), $command->getrootCommand() ));
+            $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $command->getName(), $command->getrootCommand()));
             if ($command->getName() === $event->getCommand()->getName()) {
                 $event->disableCommand();
                 $error = sprintf(
@@ -79,27 +79,29 @@ class CommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function executeMembersCommand(ConsoleTerminateEvent $event, Command $command): void
+    protected function executeMembersCommand(ConsoleTerminateEvent $event, Command $rootCommand): void
     {
-        $application = $command->getApplication();
+        $application = $rootCommand->getApplication();
         if (null === $application) {
             $this->logger->error('Failed to determine application for console command event');
             throw new LogicException('Failed to determine application for console command event');
         }
-        $chain = $this->getCommandsChainForRootCommand($command);
+        $chain = $this->getCommandsChainForRootCommand($rootCommand);
         if (count($chain)) {
             $this->logger->debug('Executing foo:hello chain members:');
-            foreach ($chain as $command) {
-                $logMessage = $command->getName() . ' registered as a member of foo:hello command chain';
+            foreach ($chain as $chainItemCommand) {
+                $logMessage = sprintf('%s registered as a member of %s command chain', $chainItemCommand->getName(), $rootCommand->getName());
                 $this->logger->debug($logMessage);
-                $this->runCommand($command, $event->getOutput());
+                $this->runCommand($chainItemCommand, $event->getOutput());
             }
-            $this->logger->debug('Execution of foo:hello chain completed.');
+            $this->logger->debug(sprintf('Execution of %s chain completed.', $chainItemCommand->getName()));
         }
     }
 
-    protected function runCommand(Command $command, OutputInterface $output): void {
-        $bufferedOutput = new BufferedOutput();;
+    protected function runCommand(Command $command, OutputInterface $output): void
+    {
+        $bufferedOutput = new BufferedOutput();
+        ;
         $command->run(new ArrayInput([]), $bufferedOutput);
         $outputMessage = $bufferedOutput->fetch();
         $this->logger->debug($outputMessage);

@@ -17,23 +17,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandEventSubscriberTest extends TestCase
 {
-    private MockObject | Command $command;
     private MockObject | Command $loggerMock;
+    private MockObject | InputInterface $inputMock;
+    private MockObject | InputInterface $outputMock;
     protected function setUp(): void
     {
         $this->loggerMock = $this->createMock(LoggerInterface::class);
+        $this->inputMock = $this->createMock(InputInterface::class);
+        $this->outputMock = $this->createMock(OutputInterface::class);
     }
 
     public function testAfterCommandIfNoApplication(): void
     {
-        $input = $this->createMock(InputInterface::class);
-        $output = $this->createMock(OutputInterface::class);
-
-        $commandService = new class('test:chainItem') extends Command implements ChainableInterface{
-            public function getRootCommand() : string{
+        $commandService = new class('test:chainItem') extends Command implements ChainableInterface {
+            public function getRootCommand() : string
+            {
                 return 'test:root';
             }
-            public function execute(InputInterface $input,OutputInterface $output) : int{
+            public function execute(InputInterface $input, OutputInterface $output) : int
+            {
                 return Command::SUCCESS;
             }
         };
@@ -41,7 +43,7 @@ class CommandEventSubscriberTest extends TestCase
         $command = new class('test:root') extends Command implements RootCommandInterface {
 
         };
-        $consoleEvent = new ConsoleTerminateEvent($command, $input, $output, Command::SUCCESS);
+        $consoleEvent = new ConsoleTerminateEvent($command, $this->inputMock, $this->outputMock, Command::SUCCESS);
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
         $this->expectException(LogicException::class);
         $subscriber->afterCommand($consoleEvent);
@@ -49,9 +51,10 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testRunRootCommand(): void
     {
-        $subscriber = new CommandEventSubscriber([], $this->loggerMock );
+        $subscriber = new CommandEventSubscriber([], $this->loggerMock);
         $command = new class('test:root') extends Command implements RootCommandInterface {
-            public function execute(InputInterface $input,OutputInterface $output) : int{
+            public function execute(InputInterface $input, OutputInterface $output) : int
+            {
                 $output->writeln('test');
                 return Command::SUCCESS;
             }
@@ -71,18 +74,38 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testDisableTaggedCommands(): void
     {
-        $commandService = new class('test:chainable') extends Command implements ChainableInterface{
-            public function getRootCommand() : string{
+        $commandService = new class('test:chainable') extends Command implements ChainableInterface {
+            public function getRootCommand() : string
+            {
                 return 'test:chainable';
             }
-            public function execute(InputInterface $input,OutputInterface $output) : int{
+            public function execute(InputInterface $input, OutputInterface $output) : int
+            {
                 return Command::SUCCESS;
             }
         };
-        $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock );
+        $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
         $this->loggerMock->expects(self::once())->method('error');
-        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->createMock(InputInterface::class), $this->createMock(OutputInterface::class)));
+        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
+    }
 
-
-     }
+    public function testIfNoCommandsForDisabling(): void
+    {
+        $commandService = new class('test:chainable') extends Command implements ChainableInterface {
+            public function getRootCommand() : string
+            {
+                return 'test:chainable';
+            }
+            public function execute(InputInterface $input, OutputInterface $output) : int
+            {
+                return Command::SUCCESS;
+            }
+        };
+        $subscriber = new CommandEventSubscriber([], $this->loggerMock);
+        $this->loggerMock
+            ->expects(self::never())
+            ->method('error')
+        ;
+        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
+    }
 }
