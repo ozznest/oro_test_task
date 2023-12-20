@@ -88,7 +88,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         }
         $chain = $this->getCommandsChainForRootCommand($rootCommand);
         if (count($chain)) {
-            $this->logger->debug('Executing foo:hello chain members:');
+            $this->logger->debug(sprintf('Executing %s chain members:', $rootCommand->getName()));
             foreach ($chain as $chainItemCommand) {
                 $logMessage = sprintf('%s registered as a member of %s command chain', $chainItemCommand->getName(), $rootCommand->getName());
                 $this->logger->debug($logMessage);
@@ -101,7 +101,6 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     protected function runCommand(Command $command, OutputInterface $output): void
     {
         $bufferedOutput = new BufferedOutput();
-        ;
         $command->run(new ArrayInput([]), $bufferedOutput);
         $outputMessage = $bufferedOutput->fetch();
         $this->logger->debug($outputMessage);

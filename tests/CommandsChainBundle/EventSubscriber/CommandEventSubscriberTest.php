@@ -9,6 +9,7 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -46,6 +47,38 @@ class CommandEventSubscriberTest extends TestCase
         $consoleEvent = new ConsoleTerminateEvent($command, $this->inputMock, $this->outputMock, Command::SUCCESS);
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
         $this->expectException(LogicException::class);
+        $subscriber->runChainCommandsForRoot($consoleEvent);
+    }
+
+    public function testRunChainCommandsForRoot(): void
+    {
+        $slaveCommandService = new class('test:chainItem') extends Command implements ChainableInterface{
+            public function getRootCommand() : string
+            {
+                return 'test:slave';
+            }
+            public function execute(InputInterface $input, OutputInterface $output) : int
+            {
+                return Command::SUCCESS;
+            }
+        };
+        $application = $this->createMock(Application::class);
+        $masterCommand = new class('test:master', $application) extends Command implements RootCommandInterface {
+            private Application $application;
+            public function __construct(string $name, Application $application)
+            {
+                $this->application = $application;
+                parent::__construct($name);
+            }
+            public function getApplication() : ?Application
+            {
+                return $this->application;
+            }
+        };
+
+        $consoleEvent = new ConsoleTerminateEvent($masterCommand, $this->inputMock, $this->outputMock, Command::SUCCESS);
+        $subscriber = new CommandEventSubscriber([$slaveCommandService], $this->loggerMock);
+        $this->loggerMock->expects(self::atLeast(1))->method('debug');
         $subscriber->runChainCommandsForRoot($consoleEvent);
     }
 
