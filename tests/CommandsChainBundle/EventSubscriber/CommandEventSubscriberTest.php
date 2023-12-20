@@ -52,7 +52,7 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testRunChainCommandsForRoot(): void
     {
-        $slaveCommandService = new class('test:chainItem') extends Command implements ChainableInterface{
+        $slaveCommandService = new class('test:chainItem') extends Command implements ChainableInterface {
             public function getRootCommand() : string
             {
                 return 'test:slave';
@@ -62,6 +62,7 @@ class CommandEventSubscriberTest extends TestCase
                 return Command::SUCCESS;
             }
         };
+        
         $application = $this->createMock(Application::class);
         $masterCommand = new class('test:master', $application) extends Command implements RootCommandInterface {
             private Application $application;
@@ -78,7 +79,10 @@ class CommandEventSubscriberTest extends TestCase
 
         $consoleEvent = new ConsoleTerminateEvent($masterCommand, $this->inputMock, $this->outputMock, Command::SUCCESS);
         $subscriber = new CommandEventSubscriber([$slaveCommandService], $this->loggerMock);
-        $this->loggerMock->expects(self::atLeast(1))->method('debug');
+        $this->loggerMock
+            ->expects(self::atLeast(1))
+            ->method('debug')
+        ;
         $subscriber->runChainCommandsForRoot($consoleEvent);
     }
 
@@ -119,7 +123,10 @@ class CommandEventSubscriberTest extends TestCase
             }
         };
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
-        $this->loggerMock->expects(self::once())->method('error');
+        $this->loggerMock
+            ->expects(self::once())
+            ->method('error')
+        ;
         $subscriber->disableSlaveCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
     }
 
