@@ -28,3 +28,4 @@ class BarCommand extends Command implements ChainableInterface
        return FooCommand::NAME;
     }
 }
+
