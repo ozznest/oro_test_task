@@ -2,6 +2,7 @@
 
 namespace App\CommandsChainBundle\EvenSubscriber;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -13,8 +14,12 @@ use Symfony\Component\Console\Command\Command;
 
 class CommandEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @param Command[] $chainedServices
+     */
     public function __construct(
-        private iterable $chainedServices
+        private iterable $chainedServices,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -33,10 +38,12 @@ class CommandEventSubscriber implements EventSubscriberInterface
         foreach ($this->chainedServices as $command) {
             if ($command->getName() === $event->getCommand()->getName()) {
                 $event->disableCommand();
-                $event->getOutput()->writeln(sprintf(
+                $error = sprintf(
                     'Error: %s command is a member of %s command chain and cannot be executed on its own.',
                     $commandName, 'foo:command'
-                ));
+                );
+                $event->getOutput()->writeln($error);
+                $this->logger->error($error);
             }
         }
     }
@@ -44,22 +51,38 @@ class CommandEventSubscriber implements EventSubscriberInterface
     public function afterCommand(ConsoleTerminateEvent $event): void
     {
         $command = $event->getCommand();
-        $this->executeMembersCommand($event, $command);
+        if ($command->getName() === 'foo:command') {
+            $log = 'foo:hello is a master command of a command chain that has registered member commands';
+            if(count($this->chainedServices)) {
+                $log .= 'that has registered member commands';
+            }
+            $this->logger->debug($log);
+            $this->executeMembersCommand($event, $command);
+        }
     }
 
     protected function executeMembersCommand(ConsoleTerminateEvent $event, Command $command): void
     {
+
         $application = $command->getApplication();
         if (null === $application) {
+            $this->logger->error('Failed to determine application for console command event');
             throw new \LogicException('Failed to determine application for console command event');
         }
-        foreach ($this->chainedServices as $command){
-            $bufferedOutput = $this->getBufferedOutput();
-            $command->run(new ArrayInput([]), $bufferedOutput);
-            $outputMessage = $bufferedOutput->fetch();
-            $event->getOutput()->write($outputMessage);
-        }
 
+        if (count($this->chainedServices)) {
+            $this->logger->debug('Executing foo:hello chain members:');
+            foreach ($this->chainedServices as $command){
+                $logMessage = $command->getName() . ' registered as a member of foo:hello command chain';
+                $this->logger->debug($logMessage);
+                $bufferedOutput = $this->getBufferedOutput();
+                $command->run(new ArrayInput([]), $bufferedOutput);
+                $outputMessage = $bufferedOutput->fetch();
+                $this->logger->debug($outputMessage);
+                $event->getOutput()->write($outputMessage);
+            }
+            $this->logger->debug('Execution of foo:hello chain completed.');
+        }
     }
 
     protected function getBufferedOutput(): OutputInterface
