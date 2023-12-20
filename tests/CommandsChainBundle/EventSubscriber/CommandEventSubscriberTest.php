@@ -57,7 +57,10 @@ class CommandEventSubscriberTest extends TestCase
             }
         };
         $output = $this->createMock(OutputInterface::class);
-        $output->expects(self::once())->method('write');
+        $output
+            ->expects(self::once())
+            ->method('write')
+        ;
 
         $subscriber->runRootCommand(new ConsoleCommandEvent(
             $command,
@@ -65,4 +68,21 @@ class CommandEventSubscriberTest extends TestCase
             $output
         ));
     }
+
+    public function testDisableTaggedCommands(): void
+    {
+        $commandService = new class('test:chainable') extends Command implements ChainableInterface{
+            public function getRootCommand() : string{
+                return 'test:chainable';
+            }
+            public function execute(InputInterface $input,OutputInterface $output) : int{
+                return Command::SUCCESS;
+            }
+        };
+        $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock );
+        $this->loggerMock->expects(self::once())->method('error');
+        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->createMock(InputInterface::class), $this->createMock(OutputInterface::class)));
+
+
+     }
 }

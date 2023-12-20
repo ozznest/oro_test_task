@@ -42,7 +42,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
         $commandName = $command->getName();
         foreach ($this->chainedServices as $command) {
-            $this->logger->debug($command->getName() .  ' registered as a member of foo:hello command chain');
+            $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $command->getName(), $command->getrootCommand() ));
             if ($command->getName() === $event->getCommand()->getName()) {
                 $event->disableCommand();
                 $error = sprintf(
@@ -62,11 +62,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
         if ($command instanceof RootCommandInterface) {
             $this->logger->debug('Executing ' . $command->getName() . ' command itself first:');
             $event->disableCommand();
-            $bufferedOutput = $this->getBufferedOutput();
-            $command->run(new ArrayInput([]), $bufferedOutput);
-            $outputMessage = $bufferedOutput->fetch();
-            $this->logger->debug($outputMessage);
-            $event->getOutput()->write($outputMessage);
+            $this->runCommand($command, $event->getOutput());
         }
     }
 
@@ -96,14 +92,18 @@ class CommandEventSubscriber implements EventSubscriberInterface
             foreach ($chain as $command) {
                 $logMessage = $command->getName() . ' registered as a member of foo:hello command chain';
                 $this->logger->debug($logMessage);
-                $bufferedOutput = $this->getBufferedOutput();
-                $command->run(new ArrayInput([]), $bufferedOutput);
-                $outputMessage = $bufferedOutput->fetch();
-                $this->logger->debug($outputMessage);
-                $event->getOutput()->write($outputMessage);
+                $this->runCommand($command, $event->getOutput());
             }
             $this->logger->debug('Execution of foo:hello chain completed.');
         }
+    }
+
+    protected function runCommand(Command $command, OutputInterface $output): void {
+        $bufferedOutput = new BufferedOutput();;
+        $command->run(new ArrayInput([]), $bufferedOutput);
+        $outputMessage = $bufferedOutput->fetch();
+        $this->logger->debug($outputMessage);
+        $output->write($outputMessage);
     }
 
     protected function getCommandsChainForRootCommand(Command $rootCommand): array
@@ -116,10 +116,5 @@ class CommandEventSubscriber implements EventSubscriberInterface
             }
         }
         return $chain;
-    }
-
-    protected function getBufferedOutput(): OutputInterface
-    {
-        return new BufferedOutput();
     }
 }
