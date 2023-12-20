@@ -17,7 +17,7 @@ class FooCommand extends Command implements RootCommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(static::NAME);
+        $output->writeln('Hello from Foo!');
         return Command::SUCCESS;
     }
 
