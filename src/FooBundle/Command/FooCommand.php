@@ -2,21 +2,23 @@
 
 namespace App\FooBundle\Command;
 
+use App\CommandsChainBundle\RootCommandInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FooCommand extends Command
+class FooCommand extends Command implements RootCommandInterface
 {
+    public const NAME = 'foo:command';
     public function __construct()
     {
-        parent::__construct('foo:command');
+        parent::__construct(static::NAME);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('foo:command');
+        $output->writeln(static::NAME);
         return Command::SUCCESS;
     }
+
 }

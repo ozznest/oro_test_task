@@ -2,6 +2,8 @@
 
 namespace App\CommandsChainBundle\EvenSubscriber;
 
+use App\CommandsChainBundle\ChainableInterface;
+use App\CommandsChainBundle\RootCommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -26,7 +28,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ConsoleEvents::COMMAND => 'disableTaggedCommands',
+            ConsoleEvents::COMMAND   => 'disableTaggedCommands',
             ConsoleEvents::TERMINATE => 'afterCommand'
         ];
     }
@@ -36,6 +38,7 @@ class CommandEventSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
         $commandName = $command->getName();
         foreach ($this->chainedServices as $command) {
+            $this->logger->debug($command->getName() .  ' registered as a member of foo:hello command chain');
             if ($command->getName() === $event->getCommand()->getName()) {
                 $event->disableCommand();
                 $error = sprintf(
@@ -44,15 +47,21 @@ class CommandEventSubscriber implements EventSubscriberInterface
                 );
                 $event->getOutput()->writeln($error);
                 $this->logger->error($error);
+            } else if($command instanceof RootCommandInterface) {
+                $this->logger->debug(sprintf('Executing %s command itself first:', $command->getName()));
             }
         }
+
     }
+
+
 
     public function afterCommand(ConsoleTerminateEvent $event): void
     {
         $command = $event->getCommand();
-        if ($command->getName() === 'foo:command') {
-            $log = 'foo:hello is a master command of a command chain that has registered member commands';
+        if ($command instanceof RootCommandInterface) {
+            $this->logger->debug('Executing ' . $command->getName() . ' command itself first:');
+            $log = sprintf('%s is a master command of a command chain that has registered member commands', $command->getName() );
             if(count($this->chainedServices)) {
                 $log .= 'that has registered member commands';
             }
@@ -61,18 +70,19 @@ class CommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
+
+
     protected function executeMembersCommand(ConsoleTerminateEvent $event, Command $command): void
     {
-
         $application = $command->getApplication();
         if (null === $application) {
             $this->logger->error('Failed to determine application for console command event');
             throw new \LogicException('Failed to determine application for console command event');
         }
-
-        if (count($this->chainedServices)) {
+        $chain = $this->getCommandsChainForRootCommand($command);
+        if (count($chain)) {
             $this->logger->debug('Executing foo:hello chain members:');
-            foreach ($this->chainedServices as $command){
+            foreach ($chain as $command){
                 $logMessage = $command->getName() . ' registered as a member of foo:hello command chain';
                 $this->logger->debug($logMessage);
                 $bufferedOutput = $this->getBufferedOutput();
@@ -83,6 +93,18 @@ class CommandEventSubscriber implements EventSubscriberInterface
             }
             $this->logger->debug('Execution of foo:hello chain completed.');
         }
+    }
+
+
+    private function getCommandsChainForRootCommand(Command $rootCommand): array {
+        $chain = [];
+        /* @var $service ChainableInterface*/
+        foreach ($this->chainedServices as $service) {
+            if($service->getRootCommand() === $rootCommand->getName()){
+                $chain[] = $service;
+            }
+        }
+        return $chain;
     }
 
     protected function getBufferedOutput(): OutputInterface
