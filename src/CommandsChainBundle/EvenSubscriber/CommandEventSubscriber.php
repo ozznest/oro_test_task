@@ -104,6 +104,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         $command->run(new ArrayInput([]), $bufferedOutput);
         $outputMessage = $bufferedOutput->fetch();
         $this->logger->debug($outputMessage);
+        //echo $outputMessage;
         $output->write($outputMessage);
     }
 

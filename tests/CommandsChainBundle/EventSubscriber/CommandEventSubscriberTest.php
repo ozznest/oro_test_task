@@ -14,6 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandEventSubscriberTest extends TestCase
@@ -55,10 +56,11 @@ class CommandEventSubscriberTest extends TestCase
         $slaveCommandService = new class('test:chainItem') extends Command implements ChainableInterface {
             public function getRootCommand() : string
             {
-                return 'test:slave';
+                return 'test:master';
             }
             public function execute(InputInterface $input, OutputInterface $output) : int
             {
+                $output->writeln('test:slave');
                 return Command::SUCCESS;
             }
         };
@@ -82,6 +84,14 @@ class CommandEventSubscriberTest extends TestCase
         $this->loggerMock
             ->expects(self::atLeast(1))
             ->method('debug')
+        ;
+
+        $output = new BufferedOutput();
+        $output->writeln('test:slave');
+        $this->outputMock
+            ->expects(self::once())
+            ->method('write')
+            ->with($output->fetch())
         ;
         $subscriber->runChainCommandsForRoot($consoleEvent);
     }
