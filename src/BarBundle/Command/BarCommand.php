@@ -25,7 +25,6 @@ class BarCommand extends Command implements ChainableInterface
 
     public function getRootCommand(): string
     {
-       return FooCommand::NAME;
+        return FooCommand::NAME;
     }
 }
-
