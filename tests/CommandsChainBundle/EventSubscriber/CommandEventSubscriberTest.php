@@ -49,6 +49,7 @@ class CommandEventSubscriberTest extends TestCase
         $subscriber->runChainCommandsForRoot($consoleEvent);
     }
 
+
     public function testRunRootCommand(): void
     {
         $subscriber = new CommandEventSubscriber([], $this->loggerMock);
@@ -72,7 +73,7 @@ class CommandEventSubscriberTest extends TestCase
         ));
     }
 
-    public function testDisableTaggedCommands(): void
+    public function testDisableSlaveCommands(): void
     {
         $commandService = new class('test:chainable') extends Command implements ChainableInterface {
             public function getRootCommand() : string
@@ -86,7 +87,7 @@ class CommandEventSubscriberTest extends TestCase
         };
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
         $this->loggerMock->expects(self::once())->method('error');
-        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
+        $subscriber->disableSlaveCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
     }
 
     public function testIfNoCommandsForDisabling(): void
@@ -106,6 +107,6 @@ class CommandEventSubscriberTest extends TestCase
             ->expects(self::never())
             ->method('error')
         ;
-        $subscriber->disableTaggedCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
+        $subscriber->disableSlaveCommands(new ConsoleCommandEvent($commandService, $this->inputMock, $this->outputMock));
     }
 }

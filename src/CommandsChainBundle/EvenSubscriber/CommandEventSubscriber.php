@@ -30,14 +30,14 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         return [
             ConsoleEvents::COMMAND   => [
-                ['disableTaggedCommands'] ,
+                ['disableSlaveCommands'] ,
                 ['runRootCommand']
             ],
             ConsoleEvents::TERMINATE => 'runChainCommandsForRoot'
         ];
     }
 
-    public function disableTaggedCommands(ConsoleCommandEvent $event): void
+    public function disableSlaveCommands(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
         $commandName = $command->getName();
