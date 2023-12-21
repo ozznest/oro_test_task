@@ -31,19 +31,18 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testRunChainCommandsForRootIfNoApplication(): void
     {
-        $commandService = new class('test:chainItem') extends Command implements ChainableInterface {
-            public function getRootCommand() : string
+        $commandService = new class ('test:chainItem') extends Command implements ChainableInterface {
+            public function getRootCommand(): string
             {
                 return 'test:root';
             }
-            public function execute(InputInterface $input, OutputInterface $output) : int
+            public function execute(InputInterface $input, OutputInterface $output): int
             {
                 return Command::SUCCESS;
             }
         };
 
-        $command = new class('test:root') extends Command implements RootCommandInterface {
-
+        $command = new class ('test:root') extends Command implements RootCommandInterface {
         };
         $consoleEvent = new ConsoleTerminateEvent($command, $this->inputMock, $this->outputMock, Command::SUCCESS);
         $subscriber = new CommandEventSubscriber([$commandService], $this->loggerMock);
@@ -53,27 +52,27 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testRunChainCommandsForRoot(): void
     {
-        $slaveCommandService = new class('test:chainItem') extends Command implements ChainableInterface {
-            public function getRootCommand() : string
+        $slaveCommandService = new class ('test:chainItem') extends Command implements ChainableInterface {
+            public function getRootCommand(): string
             {
                 return 'test:master';
             }
-            public function execute(InputInterface $input, OutputInterface $output) : int
+            public function execute(InputInterface $input, OutputInterface $output): int
             {
                 $output->writeln('test:slave');
                 return Command::SUCCESS;
             }
         };
-        
+
         $application = $this->createMock(Application::class);
-        $masterCommand = new class('test:master', $application) extends Command implements RootCommandInterface {
+        $masterCommand = new class ('test:master', $application) extends Command implements RootCommandInterface {
             private Application $application;
             public function __construct(string $name, Application $application)
             {
                 $this->application = $application;
                 parent::__construct($name);
             }
-            public function getApplication() : ?Application
+            public function getApplication(): ?Application
             {
                 return $this->application;
             }
@@ -100,8 +99,8 @@ class CommandEventSubscriberTest extends TestCase
     public function testRunRootCommand(): void
     {
         $subscriber = new CommandEventSubscriber([], $this->loggerMock);
-        $command = new class('test:root') extends Command implements RootCommandInterface {
-            public function execute(InputInterface $input, OutputInterface $output) : int
+        $command = new class ('test:root') extends Command implements RootCommandInterface {
+            public function execute(InputInterface $input, OutputInterface $output): int
             {
                 $output->writeln('test');
                 return Command::SUCCESS;
@@ -122,12 +121,12 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testDisableSlaveCommands(): void
     {
-        $commandService = new class('test:chainable') extends Command implements ChainableInterface {
-            public function getRootCommand() : string
+        $commandService = new class ('test:chainable') extends Command implements ChainableInterface {
+            public function getRootCommand(): string
             {
                 return 'test:chainable';
             }
-            public function execute(InputInterface $input, OutputInterface $output) : int
+            public function execute(InputInterface $input, OutputInterface $output): int
             {
                 return Command::SUCCESS;
             }
@@ -142,12 +141,12 @@ class CommandEventSubscriberTest extends TestCase
 
     public function testIfNoCommandsForDisabling(): void
     {
-        $commandService = new class('test:chainable') extends Command implements ChainableInterface {
-            public function getRootCommand() : string
+        $commandService = new class ('test:chainable') extends Command implements ChainableInterface {
+            public function getRootCommand(): string
             {
                 return 'test:chainable';
             }
-            public function execute(InputInterface $input, OutputInterface $output) : int
+            public function execute(InputInterface $input, OutputInterface $output): int
             {
                 return Command::SUCCESS;
             }

@@ -21,7 +21,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
      * @param Command[] $chainedServices
      */
     public function __construct(
-        private iterable        $chainedServices,
+        private iterable $chainedServices,
         private LoggerInterface $logger
     ) {
     }
@@ -71,7 +71,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {
             $log = sprintf('%s is a master command of a command chain that has registered member commands', $command->getName());
-            if(count($this->chainedServices)) {
+            if (count($this->chainedServices)) {
                 $log .= 'that has registered member commands';
             }
             $this->logger->debug($log);
@@ -113,7 +113,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         $chain = [];
         /* @var $service ChainableInterface */
         foreach ($this->chainedServices as $service) {
-            if($service->getRootCommand() === $rootCommand->getName()) {
+            if ($service->getRootCommand() === $rootCommand->getName()) {
                 $chain[] = $service;
             }
         }

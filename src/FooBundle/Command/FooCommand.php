@@ -20,5 +20,4 @@ class FooCommand extends Command implements RootCommandInterface
         $output->writeln('Hello from Foo!');
         return Command::SUCCESS;
     }
-
 }

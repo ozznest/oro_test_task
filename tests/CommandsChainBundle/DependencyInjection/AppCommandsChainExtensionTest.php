@@ -8,7 +8,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class AppCommandsChainExtensionTest extends TestCase
 {
-    public function testLoad(): void{
+    public function testLoad(): void
+    {
         $container = new ContainerBuilder();
 
         $extension = new AppCommandsChainExtension();
