@@ -6,6 +6,10 @@ services:
   App\CommandsChainBundle\:
     resource: '../../'
 
+  App\CommandsChainBundle\CommandsManager:
+    arguments:
+      $chainedServices: !tagged_iterator app.chained.console
+
   App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber:
     arguments:
       $chainedServices: !tagged_iterator app.chained.console
