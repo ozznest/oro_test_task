@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\CommandsChainBundle\EventSubscriber;
+namespace App\Tests\Unit\CommandsChainBundle\EventSubscriber;
 
 use App\CommandsChainBundle\ChainableInterface;
 use App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber;

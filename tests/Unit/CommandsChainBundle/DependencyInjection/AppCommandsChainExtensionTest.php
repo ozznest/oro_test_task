@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\CommandsChainBundle\DependencyInjection;
+namespace App\Tests\Unit\CommandsChainBundle\DependencyInjection;
 
 use App\CommandsChainBundle\DependencyInjection\AppCommandsChainExtension;
 use PHPUnit\Framework\TestCase;
