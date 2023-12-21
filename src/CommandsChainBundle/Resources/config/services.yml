@@ -2,14 +2,8 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+    bind:
+      $chainedServices: !tagged_iterator app.chained.console
 
   App\CommandsChainBundle\:
     resource: '../../'
-
-  App\CommandsChainBundle\CommandsManager:
-    arguments:
-      $chainedServices: !tagged_iterator app.chained.console
-
-  App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber:
-    arguments:
-      $chainedServices: !tagged_iterator app.chained.console
