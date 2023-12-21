@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FooCommand extends Command implements RootCommandInterface
 {
     public const NAME = 'foo:command';
+
     public function __construct()
     {
         parent::__construct(static::NAME);
@@ -18,6 +19,7 @@ class FooCommand extends Command implements RootCommandInterface
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Hello from Foo!');
+
         return Command::SUCCESS;
     }
 }

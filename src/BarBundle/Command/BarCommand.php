@@ -20,6 +20,7 @@ class BarCommand extends Command implements ChainableInterface
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Hi from Bar!');
+
         return Command::SUCCESS;
     }
 
