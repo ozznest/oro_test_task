@@ -10,13 +10,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandsManager
 {
+    private array $slaveCommands = [];
+
+    /**
+     * @param ChainableInterface[] $chainedServices
+     */
+
     public function __construct(
-        private readonly iterable $chainedServices,
-        private LoggerInterface $logger,
-        private ?BufferedOutput $bufferedOutput = null
+        private readonly iterable        $chainedServices,
+        private readonly LoggerInterface $logger,
+        private ?BufferedOutput          $bufferedOutput = null
     ) {
         if (!$bufferedOutput) {
             $this->bufferedOutput = new BufferedOutput();
+        }
+        /* @var $slaveCommand ChainableInterface*/
+        foreach ($chainedServices as $slaveCommand) {
+            $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $slaveCommand->getName(), $slaveCommand->getRootCommandName()));
+            $this->slaveCommands[$slaveCommand->getRootCommandName()] ??= [];
+            $this->slaveCommands[$slaveCommand->getRootCommandName()][]  = $slaveCommand;
         }
     }
 
@@ -28,7 +40,7 @@ class CommandsManager
         $output->write($outputMessage);
     }
 
-    public function executeMembersCommand(OutputInterface $output, Command $rootCommand): void
+    public function executeSlaveCommand(Command $rootCommand, OutputInterface $output): void
     {
         $application = $rootCommand->getApplication();
         if (null === $application) {
@@ -45,16 +57,23 @@ class CommandsManager
         }
     }
 
-    protected function getCommandsChainForRootCommand(Command $rootCommand): array
+    public function isSlaveCommand(Command $chainable): bool
     {
-        $chain = [];
-        /* @var $service ChainableInterface */
-        foreach ($this->chainedServices as $service) {
-            if ($service->getRootCommand() === $rootCommand->getName()) {
-                $chain[] = $service;
+        foreach ($this->chainedServices as $command) {
+            if($command->getName() === $chainable->getName()){
+                return true;
             }
         }
+        return false;
+    }
 
-        return $chain;
+    protected function getCommandsChainForRootCommand(Command $rootCommand): array
+    {
+        if (!isset($this->slaveCommands[$rootCommand->getName()])) {
+            return [];
+        }
+        $log = sprintf('%s is a master command of a command chain that has registered member commands  that has registered member commands', $rootCommand->getName());
+        $this->logger->debug($log);
+        return $this->slaveCommands[$rootCommand->getName()];
     }
 }

@@ -28,36 +28,59 @@ class CommandsManagerTest extends TestCase
     public function testRunCommand(): void
     {
         $manager = new CommandsManager([], $this->loggerMock, $this->bufferedOutputMock);
+
         $commandMock = $this->createMock(Command::class);
-        $commandMock->expects(self::once())->method('run');
-        $this->bufferedOutputMock->expects(self::once())->method('fetch')->willReturn('test');
+        $commandMock
+            ->expects(self::once())
+            ->method('run')
+        ;
+
+        $this->bufferedOutputMock
+            ->expects(self::once())
+            ->method('fetch')
+            ->willReturn('test')
+        ;
+
         $outputMock = $this->createMock(OutputInterface::class);
-        $outputMock->expects(self::once())->method('write')->with('test');
-        $this->loggerMock->expects(self::once())->method('debug');
+        $outputMock
+            ->expects(self::once())
+            ->method('write')
+            ->with('test')
+        ;
+
+        $this->loggerMock
+            ->expects(self::once())
+            ->method('debug');
+
         $manager->runCommand($commandMock, $outputMock);
     }
 
 
-    public function testExecuteMembersCommandWithoutApplication(): void
+    public function testExecuteSlaveCommandWithoutApplication(): void
     {
         $manager = new CommandsManager([], $this->loggerMock, $this->bufferedOutputMock);
         $outputMock = $this->createMock(OutputInterface::class);
         $commandMock = $this->createMock(Command::class);
         $this->expectException(\LogicException::class);
-        $manager->executeMembersCommand($outputMock, $commandMock);
+        $manager->executeSlaveCommand($commandMock, $outputMock);
     }
 
-    public function testExecuteMembersCommand(): void
+    public function testExecuteSlaveCommand(): void
     {
         $manager = new CommandsManager([], $this->loggerMock, $this->bufferedOutputMock);
         $outputMock = $this->createMock(OutputInterface::class);
         $commandMock = $this->createMock(Command::class);
         $applicationMock = $this->createMock(Application::class);
-        $commandMock->expects(self::atLeast(1))->method('getApplication')->willReturn($applicationMock);
-        $manager->executeMembersCommand($outputMock, $commandMock);
+
+        $commandMock
+            ->expects(self::atLeast(1))
+            ->method('getApplication')
+            ->willReturn($applicationMock)
+        ;
+        $manager->executeSlaveCommand($commandMock, $outputMock);
     }
 
-    public function testExecuteMembersCommandChain(): void
+    public function testExecuteSlaveCommandChain(): void
     {
         $slaveCommand = new class extends Command implements ChainableInterface {
             public function __construct()
@@ -65,7 +88,7 @@ class CommandsManagerTest extends TestCase
                 parent::__construct('slave');
             }
 
-            public function getRootCommand(): string
+            public function getRootCommandName(): string
             {
                 return 'root';
             }
@@ -83,6 +106,20 @@ class CommandsManagerTest extends TestCase
         $commandMock->expects(self::once(1))->method('getApplication')->willReturn($applicationMock);
         $commandMock->expects(self::atLeast(1))->method('getName')->willReturn('root');
         $outputMock->expects(self::once())->method('write');
-        $manager->executeMembersCommand($outputMock, $commandMock);
+        $manager->executeSlaveCommand($commandMock, $outputMock);
+    }
+
+    public function testIsSlaveCommandReturnsTrue(): void
+    {
+        $commandInChain = $this->createMock(ChainableInterface::class);
+        $commandInChain->expects(self::atLeast(1))->method('getName')->willReturn('slave');
+        $commandInChain->expects(self::atLeast(1))->method('getRootCommandName')->willReturn('root');
+
+        $checkedCommand = $this->createMock(Command::class);
+        $checkedCommand->expects(self::once())->method('getName')->willReturn('slave');
+
+        $manager = new CommandsManager([$commandInChain], $this->createMock(LoggerInterface::class));
+        $manager->isSlaveCommand($checkedCommand);
+        $this->assertTrue(true);
     }
 }

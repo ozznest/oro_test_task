@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 #[Autoconfigure(tags: ['app.chained.console'])]
 interface ChainableInterface
 {
-    public function getRootCommand(): string;
+    public function getRootCommandName(): string;
 
     public function run(InputInterface $input, OutputInterface $output): int;
 

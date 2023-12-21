@@ -5,7 +5,6 @@ namespace App\CommandsChainBundle\EvenSubscriber;
 use App\CommandsChainBundle\CommandsManager;
 use App\CommandsChainBundle\RootCommandInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -13,11 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class CommandEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @param Command[] $chainedServices
-     */
     public function __construct(
-        private iterable $chainedServices,
         private LoggerInterface $logger,
         private CommandsManager $commandsManager
     ) {
@@ -38,18 +33,16 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
         $commandName = $command->getName();
-        foreach ($this->chainedServices as $command) {
-            $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $command->getName(), $command->getrootCommand()));
-            if ($command->getName() === $event->getCommand()->getName()) {
-                $event->disableCommand();
-                $error = sprintf(
-                    'Error: %s command is a member of %s command chain and cannot be executed on its own.',
-                    $commandName,
-                    $command->getRootCommand()
-                );
-                $event->getOutput()->writeln($error);
-                $this->logger->error($error);
-            }
+        if ($this->commandsManager->isSlaveCommand($command))
+        {
+            $event->disableCommand();
+            $error = sprintf(
+                'Error: %s command is a member of %s command chain and cannot be executed on its own.',
+                $commandName,
+                $command->getRootCommandName()
+            );
+            $event->getOutput()->writeln($error);
+            $this->logger->error($error);
         }
     }
 
@@ -57,22 +50,20 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {
-            $this->logger->debug('Executing '.$command->getName().' command itself first:');
+            $this->logger->debug( sprintf('Executing %s command itself first:', $command->getName()));
             $event->disableCommand();
             $this->commandsManager->runCommand($command, $event->getOutput());
         }
     }
 
+    /**
+    * run root command for getting output into buffer
+    */
     public function runChainCommandsForRoot(ConsoleTerminateEvent $event): void
     {
         $rootCommand = $event->getCommand();
         if ($rootCommand instanceof RootCommandInterface) {
-            $log = sprintf('%s is a master command of a command chain that has registered member commands', $rootCommand->getName());
-            if (count($this->chainedServices)) {
-                $log .= 'that has registered member commands';
-            }
-            $this->logger->debug($log);
-            $this->commandsManager->executeMembersCommand($event->getOutput(), $rootCommand);
+            $this->commandsManager->executeSlaveCommand($rootCommand, $event->getOutput());
         }
     }
 }
