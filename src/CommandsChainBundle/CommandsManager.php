@@ -15,20 +15,19 @@ class CommandsManager
     /**
      * @param ChainableInterface[] $chainedServices
      */
-
     public function __construct(
-        private readonly iterable        $chainedServices,
+        private readonly iterable $chainedServices,
         private readonly LoggerInterface $logger,
-        private ?BufferedOutput          $bufferedOutput = null
+        private ?BufferedOutput $bufferedOutput = null
     ) {
         if (!$bufferedOutput) {
             $this->bufferedOutput = new BufferedOutput();
         }
-        /* @var $slaveCommand ChainableInterface*/
+        /* @var $slaveCommand ChainableInterface */
         foreach ($chainedServices as $slaveCommand) {
             $this->logger->debug(sprintf(' %s registered as a member of %s command chain', $slaveCommand->getName(), $slaveCommand->getRootCommandName()));
             $this->slaveCommands[$slaveCommand->getRootCommandName()] ??= [];
-            $this->slaveCommands[$slaveCommand->getRootCommandName()][]  = $slaveCommand;
+            $this->slaveCommands[$slaveCommand->getRootCommandName()][] = $slaveCommand;
         }
     }
 
@@ -60,10 +59,11 @@ class CommandsManager
     public function isSlaveCommand(Command $chainable): bool
     {
         foreach ($this->chainedServices as $command) {
-            if($command->getName() === $chainable->getName()){
+            if ($command->getName() === $chainable->getName()) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -74,6 +74,7 @@ class CommandsManager
         }
         $log = sprintf('%s is a master command of a command chain that has registered member commands  that has registered member commands', $rootCommand->getName());
         $this->logger->debug($log);
+
         return $this->slaveCommands[$rootCommand->getName()];
     }
 }

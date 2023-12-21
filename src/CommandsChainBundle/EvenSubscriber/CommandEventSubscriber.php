@@ -33,8 +33,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
         $commandName = $command->getName();
-        if ($this->commandsManager->isSlaveCommand($command))
-        {
+        if ($this->commandsManager->isSlaveCommand($command)) {
             $event->disableCommand();
             $error = sprintf(
                 'Error: %s command is a member of %s command chain and cannot be executed on its own.',
@@ -50,15 +49,15 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {
-            $this->logger->debug( sprintf('Executing %s command itself first:', $command->getName()));
+            $this->logger->debug(sprintf('Executing %s command itself first:', $command->getName()));
             $event->disableCommand();
             $this->commandsManager->runCommand($command, $event->getOutput());
         }
     }
 
     /**
-    * run root command for getting output into buffer
-    */
+     * run root command for getting output into buffer.
+     */
     public function runChainCommandsForRoot(ConsoleTerminateEvent $event): void
     {
         $rootCommand = $event->getCommand();

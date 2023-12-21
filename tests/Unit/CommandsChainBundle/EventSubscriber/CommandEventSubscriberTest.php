@@ -57,7 +57,7 @@ class CommandEventSubscriberTest extends TestCase
         ;
 
         $command = new class extends Command implements ChainableInterface {
-            public function getRootCommandName() : string
+            public function getRootCommandName(): string
             {
                 return 'root';
             }
@@ -85,7 +85,6 @@ class CommandEventSubscriberTest extends TestCase
         );
 
         $command  = new class extends Command implements RootCommandInterface {
-
         };
 
 
@@ -129,7 +128,8 @@ class CommandEventSubscriberTest extends TestCase
             $commandManagerMock
         );
 
-        $command = new class extends Command implements RootCommandInterface{};
+        $command = new class extends Command implements RootCommandInterface{
+        };
         $subscriber->runChainCommandsForRoot(
             new ConsoleTerminateEvent(
                 $command,
