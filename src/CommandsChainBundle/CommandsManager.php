@@ -41,8 +41,8 @@ class CommandsManager
         foreach ($chain as $chainItemCommand) {
             $this->logger->debug(sprintf('%s registered as a member of %s command chain', $chainItemCommand->getName(), $rootCommand->getName()));
             $this->runCommand($chainItemCommand, $output);
+            $this->logger->debug(sprintf('Execution of %s chain completed.', $chainItemCommand->getName()));
         }
-        $this->logger->debug(sprintf('Execution of %s chain completed.', $chainItemCommand->getName()));
     }
 
     protected function getCommandsChainForRootCommand(Command $rootCommand): array
@@ -54,7 +54,6 @@ class CommandsManager
                 $chain[] = $service;
             }
         }
-
         return $chain;
     }
 }
