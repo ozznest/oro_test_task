@@ -2,3 +2,6 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+
+  App\BarBundle\Command\:
+    resource: '../../Command'
