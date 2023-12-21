@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 interface ChainableInterface
 {
     public function getRootCommand(): string;
+
     public function run(InputInterface $input, OutputInterface $output): int;
 
     public function getName(): ?string;

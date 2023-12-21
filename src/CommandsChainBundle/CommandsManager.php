@@ -12,8 +12,8 @@ class CommandsManager
 {
     public function __construct(
         private readonly iterable $chainedServices,
-        private LoggerInterface   $logger,
-        private ?BufferedOutput   $bufferedOutput = null
+        private LoggerInterface $logger,
+        private ?BufferedOutput $bufferedOutput = null
     ) {
         if (!$bufferedOutput) {
             $this->bufferedOutput = new BufferedOutput();
@@ -54,6 +54,7 @@ class CommandsManager
                 $chain[] = $service;
             }
         }
+
         return $chain;
     }
 }
