@@ -4,7 +4,6 @@ namespace App\CommandsChainBundle\EvenSubscriber;
 
 use App\CommandsChainBundle\ChainableInterface;
 use App\CommandsChainBundle\RootCommandInterface;
-use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
@@ -29,11 +28,11 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ConsoleEvents::COMMAND   => [
-                ['disableSlaveCommands'] ,
-                ['runRootCommand']
+            ConsoleEvents::COMMAND => [
+                ['disableSlaveCommands'],
+                ['runRootCommand'],
             ],
-            ConsoleEvents::TERMINATE => 'runChainCommandsForRoot'
+            ConsoleEvents::TERMINATE => 'runChainCommandsForRoot',
         ];
     }
 
@@ -60,7 +59,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     {
         $command = $event->getCommand();
         if ($command instanceof RootCommandInterface) {
-            $this->logger->debug('Executing ' . $command->getName() . ' command itself first:');
+            $this->logger->debug('Executing '.$command->getName().' command itself first:');
             $event->disableCommand();
             $this->runCommand($command, $event->getOutput());
         }
@@ -84,7 +83,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         $application = $rootCommand->getApplication();
         if (null === $application) {
             $this->logger->error('Failed to determine application for console command event');
-            throw new LogicException('Failed to determine application for console command event');
+            throw new \LogicException('Failed to determine application for console command event');
         }
         $chain = $this->getCommandsChainForRootCommand($rootCommand);
         if (count($chain)) {
@@ -104,7 +103,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
         $command->run(new ArrayInput([]), $bufferedOutput);
         $outputMessage = $bufferedOutput->fetch();
         $this->logger->debug($outputMessage);
-        //echo $outputMessage;
+        // echo $outputMessage;
         $output->write($outputMessage);
     }
 
@@ -117,6 +116,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
                 $chain[] = $service;
             }
         }
+
         return $chain;
     }
 }
