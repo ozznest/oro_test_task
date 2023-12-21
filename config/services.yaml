@@ -21,6 +21,3 @@ services:
 #            - '../src/Kernel.php'
 #            - '../src/EventSubscriber/'
 #            - '../src/CommandsChainBundle/'
-
-
-
