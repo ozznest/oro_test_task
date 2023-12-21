@@ -103,20 +103,49 @@ class CommandsManagerTest extends TestCase
         $outputMock = $this->createMock(OutputInterface::class);
         $commandMock = $this->createMock(Command::class);
         $applicationMock = $this->createMock(Application::class);
-        $commandMock->expects(self::once(1))->method('getApplication')->willReturn($applicationMock);
-        $commandMock->expects(self::atLeast(1))->method('getName')->willReturn('root');
-        $outputMock->expects(self::once())->method('write');
+
+        $commandMock
+            ->expects(self::once(1))
+            ->method('getApplication')
+            ->willReturn($applicationMock)
+        ;
+
+        $commandMock
+            ->expects(self::atLeast(1))
+            ->method('getName')
+            ->willReturn('root')
+        ;
+
+        $outputMock
+            ->expects(self::once())
+            ->method('write')
+        ;
+
         $manager->executeSlaveCommand($commandMock, $outputMock);
     }
 
     public function testIsSlaveCommandReturnsTrue(): void
     {
         $commandInChain = $this->createMock(ChainableInterface::class);
-        $commandInChain->expects(self::atLeast(1))->method('getName')->willReturn('slave');
-        $commandInChain->expects(self::atLeast(1))->method('getRootCommandName')->willReturn('root');
+
+        $commandInChain
+            ->expects(self::atLeast(1))
+            ->method('getName')
+            ->willReturn('slave')
+        ;
+
+        $commandInChain
+            ->expects(self::atLeast(1))
+            ->method('getRootCommandName')
+            ->willReturn('root')
+        ;
 
         $checkedCommand = $this->createMock(Command::class);
-        $checkedCommand->expects(self::once())->method('getName')->willReturn('slave');
+        $checkedCommand
+            ->expects(self::once())
+            ->method('getName')
+            ->willReturn('slave')
+        ;
 
         $manager = new CommandsManager([$commandInChain], $this->createMock(LoggerInterface::class));
         $manager->isSlaveCommand($checkedCommand);
