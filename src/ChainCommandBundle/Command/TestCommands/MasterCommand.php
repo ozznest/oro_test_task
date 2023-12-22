@@ -2,12 +2,11 @@
 
 namespace App\ChainCommandBundle\Command\TestCommands;
 
-use App\ChainCommandBundle\RootCommandInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MasterCommand extends Command implements RootCommandInterface
+class MasterCommand extends Command
 {
     public const NAME = 'master:command';
 

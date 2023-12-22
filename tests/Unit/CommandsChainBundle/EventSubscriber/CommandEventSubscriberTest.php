@@ -85,7 +85,7 @@ class CommandEventSubscriberTest extends TestCase
             $commandManagerMock
         );
 
-        $command  = new class extends Command{
+        $command  = new class extends Command {
         };
 
 

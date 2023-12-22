@@ -60,7 +60,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     public function runChainCommandsForRoot(ConsoleTerminateEvent $event): void
     {
         $command = $event->getCommand();
-        if($this->commandsManager->isRootCommand($command)){
+        if($this->commandsManager->isRootCommand($command)) {
             $this->commandsManager->executeSlaveCommand($command, $event->getOutput());
         }
     }
