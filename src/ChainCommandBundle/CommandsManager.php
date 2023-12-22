@@ -31,10 +31,10 @@ class CommandsManager
         }
     }
 
-    public function isRootCommand(Command $command):bool {
-       return isset($this->slaveCommands[$command->getName()])
-           &&
-           count($this->slaveCommands[$command->getName()]);
+    public function isRootCommand(Command $command): bool
+    {
+        return isset($this->slaveCommands[$command->getName()])
+           && count($this->slaveCommands[$command->getName()]);
     }
 
     public function runCommand(Command $command, OutputInterface $output): void
