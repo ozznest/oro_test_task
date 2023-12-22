@@ -123,8 +123,17 @@ class CommandEventSubscriberTest extends TestCase
     public function testRunChainCommandsForRoot(): void
     {
         $commandManagerMock = $this->createMock(CommandsManager::class);
-        $commandManagerMock->expects(self::once())->method('executeSlaveCommand');
-        $commandManagerMock->expects(self::once())->method('isRootCommand')->willReturn(true);
+
+        $commandManagerMock
+            ->expects(self::once())
+            ->method('executeSlaveCommand')
+        ;
+
+        $commandManagerMock
+            ->expects(self::once())
+            ->method('isRootCommand')
+            ->willReturn(true)
+        ;
 
         $subscriber = new CommandEventSubscriber(
             $this->createMock(LoggerInterface::class),
@@ -146,7 +155,11 @@ class CommandEventSubscriberTest extends TestCase
     public function testNotRunChainCommandsForRoot(): void
     {
         $commandManagerMock = $this->createMock(CommandsManager::class);
-        $commandManagerMock->expects(self::never())->method('executeSlaveCommand');
+        $commandManagerMock
+            ->expects(self::never())
+            ->method('executeSlaveCommand')
+        ;
+
         $subscriber = new CommandEventSubscriber(
             $this->createMock(LoggerInterface::class),
             $commandManagerMock
