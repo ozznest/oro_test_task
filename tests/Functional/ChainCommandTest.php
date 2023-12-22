@@ -55,5 +55,4 @@ class ChainCommandTest extends KernelTestCase
         $expectedError = "Error: slave:command command is a member of master:command command chain and cannot be executed on its own.\n";
         $this->assertSame($expectedError, $this->bufferedOutput->fetch());
     }
-
 }
