@@ -123,13 +123,15 @@ class CommandEventSubscriberTest extends TestCase
     {
         $commandManagerMock = $this->createMock(CommandsManager::class);
         $commandManagerMock->expects(self::once())->method('executeSlaveCommand');
+        $commandManagerMock->expects(self::once())->method('isRootCommand')->willReturn(true);
+
         $subscriber = new CommandEventSubscriber(
             $this->createMock(LoggerInterface::class),
             $commandManagerMock
         );
 
-        $command = new class extends Command implements RootCommandInterface {
-        };
+        $command = $this->createMock(Command::class);
+
         $subscriber->runChainCommandsForRoot(
             new ConsoleTerminateEvent(
                 $command,

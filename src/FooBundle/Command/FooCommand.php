@@ -2,12 +2,11 @@
 
 namespace App\FooBundle\Command;
 
-use App\ChainCommandBundle\RootCommandInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FooCommand extends Command implements RootCommandInterface
+class FooCommand extends Command
 {
     public const NAME = 'foo:command';
 
