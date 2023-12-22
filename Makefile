@@ -7,7 +7,7 @@ down:
 sh:
 	docker exec -it php8-oro /bin/bash
 test:
-	docker exec -it php8-oro php /app/vendor/bin/phpunit
+	docker exec -it php8-oro php bin/phpunit
 checkCodeStyle:
 	docker exec -it php8-oro php /app/vendor/bin/phpcs
 fixCodeStyle:
