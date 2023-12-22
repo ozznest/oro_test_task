@@ -2,10 +2,10 @@
 
 namespace App\Tests\Unit\CommandsChainBundle\EventSubscriber;
 
-use App\CommandsChainBundle\ChainableInterface;
-use App\CommandsChainBundle\CommandsManager;
-use App\CommandsChainBundle\EvenSubscriber\CommandEventSubscriber;
-use App\CommandsChainBundle\RootCommandInterface;
+use App\ChainCommandBundle\ChainableInterface;
+use App\ChainCommandBundle\CommandsManager;
+use App\ChainCommandBundle\EvenSubscriber\CommandEventSubscriber;
+use App\ChainCommandBundle\RootCommandInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -128,7 +128,7 @@ class CommandEventSubscriberTest extends TestCase
             $commandManagerMock
         );
 
-        $command = new class extends Command implements RootCommandInterface{
+        $command = new class extends Command implements RootCommandInterface {
         };
         $subscriber->runChainCommandsForRoot(
             new ConsoleTerminateEvent(

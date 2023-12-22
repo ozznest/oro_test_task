@@ -1,9 +1,9 @@
 <?php
 
-namespace App\CommandsChainBundle\EvenSubscriber;
+namespace App\ChainCommandBundle\EvenSubscriber;
 
-use App\CommandsChainBundle\CommandsManager;
-use App\CommandsChainBundle\RootCommandInterface;
+use App\ChainCommandBundle\CommandsManager;
+use App\ChainCommandBundle\RootCommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;

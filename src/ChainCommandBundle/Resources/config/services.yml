@@ -5,5 +5,5 @@ services:
     bind:
       $chainedServices: !tagged_iterator app.chained.console
 
-  App\CommandsChainBundle\:
+  App\ChainCommandBundle\:
     resource: '../../'

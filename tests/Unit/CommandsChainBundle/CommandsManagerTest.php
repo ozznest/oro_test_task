@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit\CommandsChainBundle;
 
-use App\CommandsChainBundle\ChainableInterface;
-use App\CommandsChainBundle\CommandsManager;
+use App\ChainCommandBundle\ChainableInterface;
+use App\ChainCommandBundle\CommandsManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

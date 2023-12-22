@@ -2,7 +2,8 @@
 
 namespace App\Tests\Unit\CommandsChainBundle\DependencyInjection;
 
-use App\CommandsChainBundle\DependencyInjection\AppCommandsChainExtension;
+use App\ChainCommandBundle\DependencyInjection\AppChainCommandExtension;
+use App\ChainCommandBundle\DependencyInjection\AppCommandsChainExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -12,7 +13,7 @@ class AppCommandsChainExtensionTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $extension = new AppCommandsChainExtension();
+        $extension = new AppChainCommandExtension();
         $extension->load([], $container);
 
         self::assertNotEmpty($container->getDefinitions());

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CommandsChainBundle;
+namespace App\ChainCommandBundle;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

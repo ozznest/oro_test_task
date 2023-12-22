@@ -1,13 +1,13 @@
 <?php
 
-namespace App\CommandsChainBundle\DependencyInjection;
+namespace App\ChainCommandBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class AppCommandsChainExtension extends Extension
+class AppChainCommandExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

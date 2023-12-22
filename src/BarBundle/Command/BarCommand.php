@@ -2,7 +2,7 @@
 
 namespace App\BarBundle\Command;
 
-use App\CommandsChainBundle\ChainableInterface;
+use App\ChainCommandBundle\ChainableInterface;
 use App\FooBundle\Command\FooCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

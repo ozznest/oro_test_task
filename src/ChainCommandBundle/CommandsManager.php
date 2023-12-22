@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CommandsChainBundle;
+namespace App\ChainCommandBundle;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;

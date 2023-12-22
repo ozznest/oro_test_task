@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CommandsChainBundle;
+namespace App\ChainCommandBundle;
 
 interface RootCommandInterface
 {
