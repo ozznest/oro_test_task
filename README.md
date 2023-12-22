@@ -1,8 +1,8 @@
 Console Command Chaining
 ========================
-To run application you shoulr run command make:build than make :up
+To run application you should run command make build than make up
 
-To run test you should run make:test
+To run test you should run make test
 
 For showing program result run commands "make foo" and "make bar"
 
