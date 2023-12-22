@@ -3,7 +3,6 @@
 namespace App\ChainCommandBundle\EvenSubscriber;
 
 use App\ChainCommandBundle\CommandsManager;
-use App\ChainCommandBundle\RootCommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -48,7 +47,7 @@ readonly class CommandEventSubscriber implements EventSubscriberInterface
     public function runRootCommand(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
-        if ($command instanceof RootCommandInterface) {
+        if ($this->commandsManager->isRootCommand($command)) {
             $this->logger->debug(sprintf('Executing %s command itself first:', $command->getName()));
             $event->disableCommand();
             $this->commandsManager->runCommand($command, $event->getOutput());

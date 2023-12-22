@@ -5,7 +5,6 @@ namespace App\Tests\Unit\CommandsChainBundle\EventSubscriber;
 use App\ChainCommandBundle\ChainableInterface;
 use App\ChainCommandBundle\CommandsManager;
 use App\ChainCommandBundle\EvenSubscriber\CommandEventSubscriber;
-use App\ChainCommandBundle\RootCommandInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -78,13 +77,15 @@ class CommandEventSubscriberTest extends TestCase
             ->expects(self::once())
             ->method('runCommand')
         ;
+        $commandManagerMock->expects(self::once())->method('isRootCommand')->willReturn(true);
+
 
         $subscriber = new CommandEventSubscriber(
             $this->createMock(LoggerInterface::class),
             $commandManagerMock
         );
 
-        $command  = new class extends Command implements RootCommandInterface {
+        $command  = new class extends Command{
         };
 
 
