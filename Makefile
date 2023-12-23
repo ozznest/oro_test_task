@@ -18,3 +18,5 @@ foo:
 	docker exec -it php8-oro php /app/bin/console foo:command
 bar:
 	docker exec -it php8-oro php /app/bin/console bar:command
+composerInstall:
+	docker exec -it php8-oro php /app/bin/console bar:command

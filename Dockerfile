@@ -1,5 +1,5 @@
 FROM php:8.2-rc-cli
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install apt-utils -y \
 #
@@ -16,9 +16,7 @@ RUN apt-get update && apt-get upgrade -y \
 #    Чистим временные файлы
     && docker-php-source delete \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y
+RUN composer self-update
 WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader
 COPY . .
-RUN composer dump-autoload --optimize && composer run-script post-install-cmd
-
+RUN composer install
