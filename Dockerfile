@@ -19,4 +19,4 @@ RUN apt-get update && apt-get upgrade -y \
 RUN composer self-update
 WORKDIR /app
 COPY . .
-RUN composer install
+CMD bash -c "composer install"
