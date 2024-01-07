@@ -19,6 +19,5 @@ RUN apt-get update && apt-get upgrade -y \
 RUN composer self-update
 WORKDIR /app
 COPY . .
-RUN ls -lah
 RUN composer install
 expose 80
