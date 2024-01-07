@@ -19,4 +19,6 @@ RUN apt-get update && apt-get upgrade -y \
 RUN composer self-update
 WORKDIR /app
 COPY . .
-CMD bash -c "composer install"
+RUN ls -lah
+RUN composer install
+expose 80
