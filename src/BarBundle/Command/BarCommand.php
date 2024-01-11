@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BarCommand extends Command implements ChainableInterface
 {
-    public const NAME = 'bar:command';
+    public const NAME = 'bar:hi';
 
     public function __construct()
     {

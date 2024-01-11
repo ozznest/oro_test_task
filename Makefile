@@ -15,8 +15,8 @@ fixCodeStyle:
 fixSfStyle:
 	docker exec -it php8-oro php /app/vendor/bin/php-cs-fixer fix src
 foo:
-	docker exec -it php8-oro php /app/bin/console foo:command
+	docker exec -it php8-oro php /app/bin/console foo:hello
 bar:
-	docker exec -it php8-oro php /app/bin/console bar:command
+	docker exec -it php8-oro php /app/bin/console bar:hi
 composerInstall:
 	docker exec -it php8-oro composer install

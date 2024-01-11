@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FooCommand extends Command
 {
-    public const NAME = 'foo:command';
+    public const NAME = 'foo:hello';
 
     public function __construct()
     {

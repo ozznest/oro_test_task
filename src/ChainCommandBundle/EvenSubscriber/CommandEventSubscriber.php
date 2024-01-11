@@ -9,7 +9,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-readonly class CommandEventSubscriber implements EventSubscriberInterface
+class CommandEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private LoggerInterface $logger,

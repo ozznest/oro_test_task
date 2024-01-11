@@ -1,7 +1,9 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
-
+    handlers:
+        main:
+            formatter: App\Formatter\CustomLineFormatter
 when@dev:
     monolog:
         handlers:
